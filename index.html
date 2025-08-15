@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
             color: #ffffff;
             min-height: 100vh;
             padding: 20px;
@@ -211,7 +211,7 @@
         }
 
         .summary-box {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #8B0000, #DC143C);
             color: white;
             padding: 20px;
             border-radius: 10px;
@@ -233,34 +233,38 @@
 
         <!-- Goal Selection -->
         <div class="section">
-            <h2>🎯 Select Your Goal</h2>
+            <h2>🎯 Select Your Goals (Choose Multiple)</h2>
             <div class="goal-selection">
-                <div class="goal-option" onclick="selectGoal(76500, 'shyek')" id="shyek">
+                <div class="goal-option" onclick="toggleGoal(76500, 'shyek')" id="shyek">
                     <h3>Shy'ek</h3>
                     <div class="goal-cost">76,500</div>
                 </div>
-                <div class="goal-option" onclick="selectGoal(66500, 'krokhad')" id="krokhad">
+                <div class="goal-option" onclick="toggleGoal(66500, 'krokhad')" id="krokhad">
                     <h3>Kro'Khad 5★ Soul</h3>
                     <div class="goal-cost">66,500</div>
                 </div>
-                <div class="goal-option" onclick="selectGoal(52750, 'tome')" id="tome">
+                <div class="goal-option" onclick="toggleGoal(52750, 'tome')" id="tome">
                     <h3>Mythical Tome</h3>
                     <div class="goal-cost">52,750</div>
                 </div>
-                <div class="goal-option" onclick="selectGoal(40000, 'custom')" id="custom">
+                <div class="goal-option" onclick="toggleGoal(0, 'custom')" id="custom">
                     <h3>Custom Goal</h3>
-                    <div class="goal-cost">40,000</div>
+                    <div class="goal-cost" id="custom-cost">Custom</div>
                 </div>
             </div>
             <div class="input-grid" style="margin-top: 20px;">
                 <div class="input-item">
-                    <label for="goalPoints">Goal Points (edit for custom)</label>
-                    <input type="number" id="goalPoints" value="40000">
+                    <label for="customGoalPoints">Custom Goal Points</label>
+                    <input type="number" id="customGoalPoints" value="0" placeholder="Enter custom amount">
                 </div>
                 <div class="input-item">
                     <label for="currentPoints">Current Event Points</label>
                     <input type="number" id="currentPoints" value="0">
                 </div>
+            </div>
+            <div class="stat-row" style="margin-top: 15px; background: rgba(255,215,0,0.1); padding: 10px; border-radius: 5px;">
+                <span class="stat-label">Total Goal Points:</span>
+                <span class="stat-value" id="totalGoalDisplay">0</span>
             </div>
         </div>
 
@@ -371,7 +375,7 @@
     </div>
 
     <script>
-        // Shard values (same as your working calculator pattern)
+        // Shard values
         const SHARD_VALUES = {
             mystery: 3,
             ancient: 300,
@@ -380,33 +384,63 @@
             sacred: 4500
         };
 
+        // Goal values
+        const GOAL_VALUES = {
+            shyek: 76500,
+            krokhad: 66500,
+            tome: 52750
+        };
+
         // Dungeon values
         const STAGE_20_COINS_PER_ENERGY = 1.964;
         const STAGE_10_COINS_PER_ENERGY = 1.746;
         const ENERGY_PER_GEM_PURCHASE = 130;
         const GEMS_PER_PURCHASE = 40;
 
-        let selectedGoalId = null;
+        let selectedGoals = new Set();
 
-        function selectGoal(points, goalId) {
-            // Remove previous selection
-            document.querySelectorAll('.goal-option').forEach(option => {
-                option.classList.remove('selected');
-            });
+        function toggleGoal(points, goalId) {
+            const goalElement = document.getElementById(goalId);
             
-            // Add selection to clicked option
-            document.getElementById(goalId).classList.add('selected');
-            selectedGoalId = goalId;
-            
-            // Update goal input
-            document.getElementById('goalPoints').value = points;
+            // Toggle selection state
+            if (selectedGoals.has(goalId)) {
+                goalElement.classList.remove('selected');
+                selectedGoals.delete(goalId);
+            } else {
+                goalElement.classList.add('selected');
+                selectedGoals.add(goalId);
+            }
             
             updateCalculations();
         }
 
+        function calculateTotalGoal() {
+            let totalGoal = 0;
+            
+            // Add up selected preset goals
+            selectedGoals.forEach(goalId => {
+                if (GOAL_VALUES[goalId]) {
+                    totalGoal += GOAL_VALUES[goalId];
+                }
+            });
+            
+            // Add custom goal if selected
+            if (selectedGoals.has('custom')) {
+                const customAmount = parseInt(document.getElementById('customGoalPoints').value) || 0;
+                totalGoal += customAmount;
+                
+                // Update custom display
+                document.getElementById('custom-cost').textContent = customAmount.toLocaleString();
+            } else {
+                document.getElementById('custom-cost').textContent = 'Custom';
+            }
+            
+            return totalGoal;
+        }
+
         function updateCalculations() {
-            // Get current values
-            const goalPoints = parseInt(document.getElementById('goalPoints').value) || 0;
+            // Calculate total goal from selected options
+            const goalPoints = calculateTotalGoal();
             const currentPoints = parseInt(document.getElementById('currentPoints').value) || 0;
             
             // Calculate summoning points
@@ -433,6 +467,7 @@
             const gemsNeeded = Math.ceil(totalEnergy / ENERGY_PER_GEM_PURCHASE) * GEMS_PER_PURCHASE;
             
             // Update display
+            document.getElementById('totalGoalDisplay').textContent = goalPoints.toLocaleString();
             document.getElementById('displayGoal').textContent = goalPoints.toLocaleString();
             document.getElementById('displayCurrent').textContent = currentPoints.toLocaleString();
             document.getElementById('displaySummoning').textContent = summoningPoints.toLocaleString();
@@ -452,13 +487,13 @@
             const statusElement = document.getElementById('completionStatus');
             if (totalPlanned >= goalPoints && goalPoints > 0) {
                 statusElement.className = 'completion-status can-complete';
-                statusElement.textContent = '🎉 Goal Achievable!';
+                statusElement.textContent = '🎉 All Goals Achievable!';
             } else if (goalPoints > 0) {
                 statusElement.className = 'completion-status cannot-complete';
                 statusElement.textContent = `Need ${stillNeeded.toLocaleString()} more points`;
             } else {
                 statusElement.className = 'completion-status cannot-complete';
-                statusElement.textContent = 'Set a goal to see progress';
+                statusElement.textContent = 'Select goals to see progress';
             }
             
             // Update summary
@@ -466,17 +501,39 @@
                 totalPlanned.toLocaleString() + ' / ' + goalPoints.toLocaleString();
             
             if (stillNeeded <= 0 && goalPoints > 0) {
-                document.getElementById('summaryText').textContent = '🎉 Goal Complete!';
+                document.getElementById('summaryText').textContent = '🎉 All Goals Complete!';
             } else if (goalPoints > 0) {
                 document.getElementById('summaryText').textContent = 
-                    `${stillNeeded.toLocaleString()} points to go!`;
+                    `${stillNeeded.toLocaleString()} points to go for all selected goals!`;
             } else {
-                document.getElementById('summaryText').textContent = 'Select your goal and enter your progress!';
+                document.getElementById('summaryText').textContent = 'Select your goals and enter your progress!';
+            }
+
+            // Show breakdown of selected goals
+            const selectedGoalsList = Array.from(selectedGoals).map(goalId => {
+                if (goalId === 'custom') {
+                    const customAmount = parseInt(document.getElementById('customGoalPoints').value) || 0;
+                    return customAmount > 0 ? `Custom (${customAmount.toLocaleString()})` : null;
+                } else {
+                    const goalNames = {
+                        shyek: 'Shy\'ek',
+                        krokhad: 'Kro\'Khad Soul',
+                        tome: 'Mythical Tome'
+                    };
+                    return `${goalNames[goalId]} (${GOAL_VALUES[goalId].toLocaleString()})`;
+                }
+            }).filter(Boolean);
+
+            if (selectedGoalsList.length > 0) {
+                const goalBreakdown = selectedGoalsList.join(' + ');
+                if (selectedGoalsList.length > 1) {
+                    document.getElementById('summaryText').textContent += ` Goals: ${goalBreakdown}`;
+                }
             }
         }
 
-        // Add event listeners (same pattern as your working calculator)
-        document.getElementById('goalPoints').addEventListener('input', updateCalculations);
+        // Add event listeners
+        document.getElementById('customGoalPoints').addEventListener('input', updateCalculations);
         document.getElementById('currentPoints').addEventListener('input', updateCalculations);
         
         Object.keys(SHARD_VALUES).forEach(shard => {
