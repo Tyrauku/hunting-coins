@@ -5,109 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hunting Coins Event Tracker</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
             min-height: 100vh;
+            padding: 20px;
         }
-        
+
         .container {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+            border: 1px solid #333333;
         }
-        
+
         h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
+            color: #ffd700;
+            margin-bottom: 10px;
             font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
-        
-        .section {
+
+        .subtitle {
+            text-align: center;
+            color: #cccccc;
             margin-bottom: 30px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
+            font-size: 1.1em;
         }
-        
-        .section-header {
-            background: linear-gradient(90deg, #4CAF50, #45a049);
-            color: white;
+
+        .section {
+            background: linear-gradient(135deg, #1e1e1e, #333333);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #444444;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .goal-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .goal-option {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            border: 2px solid #444444;
+            border-radius: 10px;
             padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .goal-option:hover {
+            border-color: #ffd700;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .goal-option.selected {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, #3a3a1a, #2a2a0a);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .goal-option h3 {
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .goal-cost {
+            color: #ff6b35;
             font-weight: bold;
             font-size: 1.2em;
         }
-        
-        .shard-header { background: linear-gradient(90deg, #FF9800, #F57C00); }
-        .dungeon-header { background: linear-gradient(90deg, #2196F3, #1976D2); }
-        .progress-header { background: linear-gradient(90deg, #9C27B0, #7B1FA2); }
-        .calc-header { background: linear-gradient(90deg, #607D8B, #455A64); }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+
+        .input-item {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #444444;
         }
-        
-        th {
-            background-color: #f5f5f5;
+
+        .input-item label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: bold;
+            color: #cccccc;
         }
-        
-        tr:hover {
-            background-color: #f8f9ff;
-        }
-        
+
         input[type="number"] {
-            width: 80px;
-            padding: 8px;
-            border: 2px solid #ddd;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555555;
             border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-        }
-        
-        .points-cell {
-            font-weight: bold;
-            color: #2E7D32;
+            background: #1a1a1a;
+            color: #ffffff;
             font-size: 16px;
         }
-        
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: #222222;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #1e1e1e, #333333);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #444444;
+        }
+
+        .result-card h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #333333;
+        }
+
+        .stat-label {
+            color: #cccccc;
+        }
+
+        .stat-value {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
         .progress-bar {
             width: 100%;
             height: 25px;
-            background-color: #f0f0f0;
+            background-color: #333333;
             border-radius: 12px;
             overflow: hidden;
             margin: 10px 0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
-        
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4CAF50, #81C784);
             transition: width 0.5s ease;
             border-radius: 12px;
         }
-        
+
+        .completion-status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .can-complete {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(40, 167, 69, 0.1));
+            border: 1px solid #28a745;
+            color: #4CAF50;
+        }
+
+        .cannot-complete {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(220, 53, 69, 0.1));
+            border: 1px solid #dc3545;
+            color: #ff6b6b;
+        }
+
         .summary-box {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -116,7 +218,7 @@
             text-align: center;
             margin-top: 20px;
         }
-        
+
         .big-number {
             font-size: 2em;
             font-weight: bold;
@@ -127,212 +229,265 @@
 <body>
     <div class="container">
         <h1>🏹 Hunting Coins Event Tracker</h1>
-        
-        <!-- Shard Summoning Section -->
+        <p class="subtitle">Track your progress toward event rewards</p>
+
+        <!-- Goal Selection -->
         <div class="section">
-            <div class="section-header shard-header">🔮 SHARD SUMMONING</div>
-            <table>
-                <tr>
-                    <th>Shard Type</th>
-                    <th>Amount Opened</th>
-                    <th>Points Each</th>
-                    <th>Total Points</th>
-                </tr>
-                <tr>
-                    <td>Mystery Shards</td>
-                    <td><input type="number" id="mystery" value="0" oninput="calculate()"></td>
-                    <td>3</td>
-                    <td class="points-cell" id="mystery-total">0</td>
-                </tr>
-                <tr>
-                    <td>Ancient Shards</td>
-                    <td><input type="number" id="ancient" value="0" oninput="calculate()"></td>
-                    <td>300</td>
-                    <td class="points-cell" id="ancient-total">0</td>
-                </tr>
-                <tr>
-                    <td>Void Shards</td>
-                    <td><input type="number" id="void" value="0" oninput="calculate()"></td>
-                    <td>750</td>
-                    <td class="points-cell" id="void-total">0</td>
-                </tr>
-                <tr>
-                    <td>Primal Shards</td>
-                    <td><input type="number" id="primal" value="0" oninput="calculate()"></td>
-                    <td>1,800</td>
-                    <td class="points-cell" id="primal-total">0</td>
-                </tr>
-                <tr>
-                    <td>Sacred Shards</td>
-                    <td><input type="number" id="sacred" value="0" oninput="calculate()"></td>
-                    <td>4,500</td>
-                    <td class="points-cell" id="sacred-total">0</td>
-                </tr>
-            </table>
+            <h2>🎯 Select Your Goal</h2>
+            <div class="goal-selection">
+                <div class="goal-option" onclick="selectGoal(76500, 'shyek')" id="shyek">
+                    <h3>Shy'ek</h3>
+                    <div class="goal-cost">76,500</div>
+                </div>
+                <div class="goal-option" onclick="selectGoal(66500, 'krokhad')" id="krokhad">
+                    <h3>Kro'Khad 5★ Soul</h3>
+                    <div class="goal-cost">66,500</div>
+                </div>
+                <div class="goal-option" onclick="selectGoal(52750, 'tome')" id="tome">
+                    <h3>Mythical Tome</h3>
+                    <div class="goal-cost">52,750</div>
+                </div>
+                <div class="goal-option" onclick="selectGoal(40000, 'custom')" id="custom">
+                    <h3>Custom Goal</h3>
+                    <div class="goal-cost">40,000</div>
+                </div>
+            </div>
+            <div class="input-grid" style="margin-top: 20px;">
+                <div class="input-item">
+                    <label for="goalPoints">Goal Points (edit for custom)</label>
+                    <input type="number" id="goalPoints" value="40000">
+                </div>
+                <div class="input-item">
+                    <label for="currentPoints">Current Event Points</label>
+                    <input type="number" id="currentPoints" value="0">
+                </div>
+            </div>
         </div>
 
-        <!-- Dungeon Farming Section -->
+        <!-- Shard Summoning -->
         <div class="section">
-            <div class="section-header dungeon-header">⚔️ DUNGEON FARMING</div>
-            <table>
-                <tr>
-                    <th>Stage</th>
-                    <th>Energy Spent</th>
-                    <th>Points per Energy</th>
-                    <th>Total Points</th>
-                </tr>
-                <tr>
-                    <td>Stage 20 Normal (16 energy/run)</td>
-                    <td><input type="number" id="stage20" value="0" oninput="calculate()"></td>
-                    <td>1.964</td>
-                    <td class="points-cell" id="stage20-total">0</td>
-                </tr>
-                <tr>
-                    <td>Stage 10 Hard (20 energy/run)</td>
-                    <td><input type="number" id="stage10" value="0" oninput="calculate()"></td>
-                    <td>1.746</td>
-                    <td class="points-cell" id="stage10-total">0</td>
-                </tr>
-                <tr>
-                    <td>Stage 30 Event (20 energy/run)</td>
-                    <td><input type="number" id="stage30" value="0" oninput="calculate()"></td>
-                    <td>1.746</td>
-                    <td class="points-cell" id="stage30-total">0</td>
-                </tr>
-            </table>
+            <h2>🔮 Shard Summoning</h2>
+            <div class="input-grid">
+                <div class="input-item">
+                    <label for="mystery">Mystery Shards (3 points each)</label>
+                    <input type="number" id="mystery" value="0">
+                </div>
+                <div class="input-item">
+                    <label for="ancient">Ancient Shards (300 points each)</label>
+                    <input type="number" id="ancient" value="0">
+                </div>
+                <div class="input-item">
+                    <label for="void">Void Shards (750 points each)</label>
+                    <input type="number" id="void" value="0">
+                </div>
+                <div class="input-item">
+                    <label for="primal">Primal Shards (1,800 points each)</label>
+                    <input type="number" id="primal" value="0">
+                </div>
+                <div class="input-item">
+                    <label for="sacred">Sacred Shards (4,500 points each)</label>
+                    <input type="number" id="sacred" value="0">
+                </div>
+            </div>
         </div>
 
-        <!-- Progress Tracking Section -->
+        <!-- Dungeon Farming -->
         <div class="section">
-            <div class="section-header progress-header">📊 EVENT PROGRESS</div>
-            <table>
-                <tr>
-                    <th>Metric</th>
-                    <th>Value</th>
-                </tr>
-                <tr>
-                    <td>Goal Points</td>
-                    <td><input type="number" id="goal" value="40000" oninput="calculate()" style="width: 100px;"></td>
-                </tr>
-                <tr>
-                    <td>Current Total Points</td>
-                    <td class="points-cell" id="current-total">0</td>
-                </tr>
-                <tr>
-                    <td>Points Remaining</td>
-                    <td class="points-cell" id="remaining">40,000</td>
-                </tr>
-                <tr>
-                    <td>Progress</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
-                        </div>
-                        <span id="progress-percent">0%</span>
-                    </td>
-                </tr>
-            </table>
+            <h2>⚔️ Dungeon Farming</h2>
+            <div class="input-grid">
+                <div class="input-item">
+                    <label for="stage20Energy">Stage 20 Normal Energy (1.964 points/energy)</label>
+                    <input type="number" id="stage20Energy" value="0" step="100">
+                </div>
+                <div class="input-item">
+                    <label for="stage10Energy">Stage 10 Hard / Stage 30 Event Energy (1.746 points/energy)</label>
+                    <input type="number" id="stage10Energy" value="0" step="100">
+                </div>
+            </div>
         </div>
 
-        <!-- Calculations Section -->
-        <div class="section">
-            <div class="section-header calc-header">🧮 CALCULATIONS</div>
-            <table>
-                <tr>
-                    <th>Calculation</th>
-                    <th>Result</th>
-                </tr>
-                <tr>
-                    <td>Energy Needed (Stage 20)</td>
-                    <td class="points-cell" id="energy-needed">20,366</td>
-                </tr>
-                <tr>
-                    <td>Gems Needed (40 gems = 130 energy)</td>
-                    <td class="points-cell" id="gems-needed">6,273</td>
-                </tr>
-            </table>
+        <!-- Results -->
+        <div class="results-section">
+            <div class="result-card">
+                <h3>📊 Progress Summary</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Goal Points:</span>
+                    <span class="stat-value" id="displayGoal">40,000</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Current Progress:</span>
+                    <span class="stat-value" id="displayCurrent">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">From Summoning:</span>
+                    <span class="stat-value" id="displaySummoning">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">From Dungeons:</span>
+                    <span class="stat-value" id="displayDungeons">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Planned:</span>
+                    <span class="stat-value" id="displayTotal">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Still Needed:</span>
+                    <span class="stat-value" id="displayNeeded">40,000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div id="completionStatus" class="completion-status cannot-complete">
+                    Select a goal and enter your progress
+                </div>
+            </div>
+
+            <div class="result-card">
+                <h3>🧮 Energy & Gems</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Stage 20 Runs:</span>
+                    <span class="stat-value" id="stage20Runs">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Stage 10 Runs:</span>
+                    <span class="stat-value" id="stage10Runs">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Energy:</span>
+                    <span class="stat-value" id="totalEnergy">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Gems Needed:</span>
+                    <span class="stat-value" id="gemsNeeded">0</span>
+                </div>
+            </div>
         </div>
 
         <div class="summary-box">
             <div>🎯 Quick Summary</div>
-            <div class="big-number" id="summary-points">0 / 40,000</div>
-            <div id="summary-text">Enter your progress above to see calculations!</div>
+            <div class="big-number" id="summaryPoints">0 / 40,000</div>
+            <div id="summaryText">Select your goal and enter your progress!</div>
         </div>
     </div>
 
     <script>
-        function calculate() {
-            // Get input values
-            const mystery = parseInt(document.getElementById('mystery').value) || 0;
-            const ancient = parseInt(document.getElementById('ancient').value) || 0;
-            const void = parseInt(document.getElementById('void').value) || 0;
-            const primal = parseInt(document.getElementById('primal').value) || 0;
-            const sacred = parseInt(document.getElementById('sacred').value) || 0;
-            
-            const stage20 = parseInt(document.getElementById('stage20').value) || 0;
-            const stage10 = parseInt(document.getElementById('stage10').value) || 0;
-            const stage30 = parseInt(document.getElementById('stage30').value) || 0;
-            
-            const goal = parseInt(document.getElementById('goal').value) || 40000;
+        // Shard values (same as your working calculator pattern)
+        const SHARD_VALUES = {
+            mystery: 3,
+            ancient: 300,
+            void: 750,
+            primal: 1800,
+            sacred: 4500
+        };
 
-            // Calculate shard points
-            const mysteryTotal = mystery * 3;
-            const ancientTotal = ancient * 300;
-            const voidTotal = void * 750;
-            const primalTotal = primal * 1800;
-            const sacredTotal = sacred * 4500;
+        // Dungeon values
+        const STAGE_20_COINS_PER_ENERGY = 1.964;
+        const STAGE_10_COINS_PER_ENERGY = 1.746;
+        const ENERGY_PER_GEM_PURCHASE = 130;
+        const GEMS_PER_PURCHASE = 40;
 
+        let selectedGoalId = null;
+
+        function selectGoal(points, goalId) {
+            // Remove previous selection
+            document.querySelectorAll('.goal-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            document.getElementById(goalId).classList.add('selected');
+            selectedGoalId = goalId;
+            
+            // Update goal input
+            document.getElementById('goalPoints').value = points;
+            
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            // Get current values
+            const goalPoints = parseInt(document.getElementById('goalPoints').value) || 0;
+            const currentPoints = parseInt(document.getElementById('currentPoints').value) || 0;
+            
+            // Calculate summoning points
+            let summoningPoints = 0;
+            Object.keys(SHARD_VALUES).forEach(shard => {
+                const count = parseInt(document.getElementById(shard).value) || 0;
+                summoningPoints += count * SHARD_VALUES[shard];
+            });
+            
             // Calculate dungeon points
-            const stage20Total = Math.round(stage20 * 1.964);
-            const stage10Total = Math.round(stage10 * 1.746);
-            const stage30Total = Math.round(stage30 * 1.746);
-
-            // Update shard totals
-            document.getElementById('mystery-total').textContent = mysteryTotal.toLocaleString();
-            document.getElementById('ancient-total').textContent = ancientTotal.toLocaleString();
-            document.getElementById('void-total').textContent = voidTotal.toLocaleString();
-            document.getElementById('primal-total').textContent = primalTotal.toLocaleString();
-            document.getElementById('sacred-total').textContent = sacredTotal.toLocaleString();
-
-            // Update dungeon totals
-            document.getElementById('stage20-total').textContent = stage20Total.toLocaleString();
-            document.getElementById('stage10-total').textContent = stage10Total.toLocaleString();
-            document.getElementById('stage30-total').textContent = stage30Total.toLocaleString();
-
-            // Calculate overall progress
-            const currentTotal = mysteryTotal + ancientTotal + voidTotal + primalTotal + sacredTotal + 
-                               stage20Total + stage10Total + stage30Total;
-            const remaining = goal - currentTotal;
-            const progressPercent = Math.min(100, (currentTotal / goal) * 100);
-
-            // Calculate energy and gems needed
-            const energyNeeded = Math.max(0, Math.ceil(remaining / 1.964));
-            const gemsNeeded = Math.ceil(energyNeeded * 0.308);
-
-            // Update progress display
-            document.getElementById('current-total').textContent = currentTotal.toLocaleString();
-            document.getElementById('remaining').textContent = remaining.toLocaleString();
-            document.getElementById('progress-percent').textContent = progressPercent.toFixed(1) + '%';
-            document.getElementById('progress-bar').style.width = progressPercent + '%';
-
-            // Update calculations
-            document.getElementById('energy-needed').textContent = energyNeeded.toLocaleString();
-            document.getElementById('gems-needed').textContent = gemsNeeded.toLocaleString();
-
-            // Update summary
-            document.getElementById('summary-points').textContent = 
-                currentTotal.toLocaleString() + ' / ' + goal.toLocaleString();
+            const stage20Energy = parseInt(document.getElementById('stage20Energy').value) || 0;
+            const stage10Energy = parseInt(document.getElementById('stage10Energy').value) || 0;
+            const dungeonPoints = Math.floor(stage20Energy * STAGE_20_COINS_PER_ENERGY + stage10Energy * STAGE_10_COINS_PER_ENERGY);
             
-            if (remaining <= 0) {
-                document.getElementById('summary-text').textContent = '🎉 Goal Complete!';
+            // Calculate totals
+            const totalPlanned = currentPoints + summoningPoints + dungeonPoints;
+            const stillNeeded = Math.max(0, goalPoints - totalPlanned);
+            const progressPercent = goalPoints > 0 ? Math.min(100, (totalPlanned / goalPoints) * 100) : 0;
+            
+            // Dungeon details
+            const stage20Runs = Math.floor(stage20Energy / 16);
+            const stage10Runs = Math.floor(stage10Energy / 20);
+            const totalEnergy = stage20Energy + stage10Energy;
+            const gemsNeeded = Math.ceil(totalEnergy / ENERGY_PER_GEM_PURCHASE) * GEMS_PER_PURCHASE;
+            
+            // Update display
+            document.getElementById('displayGoal').textContent = goalPoints.toLocaleString();
+            document.getElementById('displayCurrent').textContent = currentPoints.toLocaleString();
+            document.getElementById('displaySummoning').textContent = summoningPoints.toLocaleString();
+            document.getElementById('displayDungeons').textContent = dungeonPoints.toLocaleString();
+            document.getElementById('displayTotal').textContent = totalPlanned.toLocaleString();
+            document.getElementById('displayNeeded').textContent = stillNeeded.toLocaleString();
+            
+            document.getElementById('stage20Runs').textContent = stage20Runs.toLocaleString();
+            document.getElementById('stage10Runs').textContent = stage10Runs.toLocaleString();
+            document.getElementById('totalEnergy').textContent = totalEnergy.toLocaleString();
+            document.getElementById('gemsNeeded').textContent = gemsNeeded.toLocaleString();
+            
+            // Update progress bar
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            
+            // Update completion status
+            const statusElement = document.getElementById('completionStatus');
+            if (totalPlanned >= goalPoints && goalPoints > 0) {
+                statusElement.className = 'completion-status can-complete';
+                statusElement.textContent = '🎉 Goal Achievable!';
+            } else if (goalPoints > 0) {
+                statusElement.className = 'completion-status cannot-complete';
+                statusElement.textContent = `Need ${stillNeeded.toLocaleString()} more points`;
             } else {
-                document.getElementById('summary-text').textContent = 
-                    `${remaining.toLocaleString()} points to go! Need ${energyNeeded.toLocaleString()} energy or ${gemsNeeded.toLocaleString()} gems.`;
+                statusElement.className = 'completion-status cannot-complete';
+                statusElement.textContent = 'Set a goal to see progress';
+            }
+            
+            // Update summary
+            document.getElementById('summaryPoints').textContent = 
+                totalPlanned.toLocaleString() + ' / ' + goalPoints.toLocaleString();
+            
+            if (stillNeeded <= 0 && goalPoints > 0) {
+                document.getElementById('summaryText').textContent = '🎉 Goal Complete!';
+            } else if (goalPoints > 0) {
+                document.getElementById('summaryText').textContent = 
+                    `${stillNeeded.toLocaleString()} points to go!`;
+            } else {
+                document.getElementById('summaryText').textContent = 'Select your goal and enter your progress!';
             }
         }
 
-        // Initialize calculations
-        calculate();
+        // Add event listeners (same pattern as your working calculator)
+        document.getElementById('goalPoints').addEventListener('input', updateCalculations);
+        document.getElementById('currentPoints').addEventListener('input', updateCalculations);
+        
+        Object.keys(SHARD_VALUES).forEach(shard => {
+            document.getElementById(shard).addEventListener('input', updateCalculations);
+        });
+        
+        document.getElementById('stage20Energy').addEventListener('input', updateCalculations);
+        document.getElementById('stage10Energy').addEventListener('input', updateCalculations);
+        
+        // Initial calculation
+        updateCalculations();
     </script>
 </body>
 </html>
