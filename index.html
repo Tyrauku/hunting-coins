@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunting Coins Event Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .shard-header { background: linear-gradient(90deg, #FF9800, #F57C00); }
+        .dungeon-header { background: linear-gradient(90deg, #2196F3, #1976D2); }
+        .progress-header { background: linear-gradient(90deg, #9C27B0, #7B1FA2); }
+        .calc-header { background: linear-gradient(90deg, #607D8B, #455A64); }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f8f9ff;
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        
+        .points-cell {
+            font-weight: bold;
+            color: #2E7D32;
+            font-size: 16px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background-color: #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 10px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            transition: width 0.5s ease;
+            border-radius: 12px;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .big-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏹 Hunting Coins Event Tracker</h1>
+        
+        <!-- Shard Summoning Section -->
+        <div class="section">
+            <div class="section-header shard-header">🔮 SHARD SUMMONING</div>
+            <table>
+                <tr>
+                    <th>Shard Type</th>
+                    <th>Amount Opened</th>
+                    <th>Points Each</th>
+                    <th>Total Points</th>
+                </tr>
+                <tr>
+                    <td>Mystery Shards</td>
+                    <td><input type="number" id="mystery" value="0" oninput="calculate()"></td>
+                    <td>3</td>
+                    <td class="points-cell" id="mystery-total">0</td>
+                </tr>
+                <tr>
+                    <td>Ancient Shards</td>
+                    <td><input type="number" id="ancient" value="0" oninput="calculate()"></td>
+                    <td>300</td>
+                    <td class="points-cell" id="ancient-total">0</td>
+                </tr>
+                <tr>
+                    <td>Void Shards</td>
+                    <td><input type="number" id="void" value="0" oninput="calculate()"></td>
+                    <td>750</td>
+                    <td class="points-cell" id="void-total">0</td>
+                </tr>
+                <tr>
+                    <td>Primal Shards</td>
+                    <td><input type="number" id="primal" value="0" oninput="calculate()"></td>
+                    <td>1,800</td>
+                    <td class="points-cell" id="primal-total">0</td>
+                </tr>
+                <tr>
+                    <td>Sacred Shards</td>
+                    <td><input type="number" id="sacred" value="0" oninput="calculate()"></td>
+                    <td>4,500</td>
+                    <td class="points-cell" id="sacred-total">0</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Dungeon Farming Section -->
+        <div class="section">
+            <div class="section-header dungeon-header">⚔️ DUNGEON FARMING</div>
+            <table>
+                <tr>
+                    <th>Stage</th>
+                    <th>Energy Spent</th>
+                    <th>Points per Energy</th>
+                    <th>Total Points</th>
+                </tr>
+                <tr>
+                    <td>Stage 20 Normal (16 energy/run)</td>
+                    <td><input type="number" id="stage20" value="0" oninput="calculate()"></td>
+                    <td>1.964</td>
+                    <td class="points-cell" id="stage20-total">0</td>
+                </tr>
+                <tr>
+                    <td>Stage 10 Hard (20 energy/run)</td>
+                    <td><input type="number" id="stage10" value="0" oninput="calculate()"></td>
+                    <td>1.746</td>
+                    <td class="points-cell" id="stage10-total">0</td>
+                </tr>
+                <tr>
+                    <td>Stage 30 Event (20 energy/run)</td>
+                    <td><input type="number" id="stage30" value="0" oninput="calculate()"></td>
+                    <td>1.746</td>
+                    <td class="points-cell" id="stage30-total">0</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Progress Tracking Section -->
+        <div class="section">
+            <div class="section-header progress-header">📊 EVENT PROGRESS</div>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Goal Points</td>
+                    <td><input type="number" id="goal" value="40000" oninput="calculate()" style="width: 100px;"></td>
+                </tr>
+                <tr>
+                    <td>Current Total Points</td>
+                    <td class="points-cell" id="current-total">0</td>
+                </tr>
+                <tr>
+                    <td>Points Remaining</td>
+                    <td class="points-cell" id="remaining">40,000</td>
+                </tr>
+                <tr>
+                    <td>Progress</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <span id="progress-percent">0%</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Calculations Section -->
+        <div class="section">
+            <div class="section-header calc-header">🧮 CALCULATIONS</div>
+            <table>
+                <tr>
+                    <th>Calculation</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td>Energy Needed (Stage 20)</td>
+                    <td class="points-cell" id="energy-needed">20,366</td>
+                </tr>
+                <tr>
+                    <td>Gems Needed (40 gems = 130 energy)</td>
+                    <td class="points-cell" id="gems-needed">6,273</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="summary-box">
+            <div>🎯 Quick Summary</div>
+            <div class="big-number" id="summary-points">0 / 40,000</div>
+            <div id="summary-text">Enter your progress above to see calculations!</div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Get input values
+            const mystery = parseInt(document.getElementById('mystery').value) || 0;
+            const ancient = parseInt(document.getElementById('ancient').value) || 0;
+            const void = parseInt(document.getElementById('void').value) || 0;
+            const primal = parseInt(document.getElementById('primal').value) || 0;
+            const sacred = parseInt(document.getElementById('sacred').value) || 0;
+            
+            const stage20 = parseInt(document.getElementById('stage20').value) || 0;
+            const stage10 = parseInt(document.getElementById('stage10').value) || 0;
+            const stage30 = parseInt(document.getElementById('stage30').value) || 0;
+            
+            const goal = parseInt(document.getElementById('goal').value) || 40000;
+
+            // Calculate shard points
+            const mysteryTotal = mystery * 3;
+            const ancientTotal = ancient * 300;
+            const voidTotal = void * 750;
+            const primalTotal = primal * 1800;
+            const sacredTotal = sacred * 4500;
+
+            // Calculate dungeon points
+            const stage20Total = Math.round(stage20 * 1.964);
+            const stage10Total = Math.round(stage10 * 1.746);
+            const stage30Total = Math.round(stage30 * 1.746);
+
+            // Update shard totals
+            document.getElementById('mystery-total').textContent = mysteryTotal.toLocaleString();
+            document.getElementById('ancient-total').textContent = ancientTotal.toLocaleString();
+            document.getElementById('void-total').textContent = voidTotal.toLocaleString();
+            document.getElementById('primal-total').textContent = primalTotal.toLocaleString();
+            document.getElementById('sacred-total').textContent = sacredTotal.toLocaleString();
+
+            // Update dungeon totals
+            document.getElementById('stage20-total').textContent = stage20Total.toLocaleString();
+            document.getElementById('stage10-total').textContent = stage10Total.toLocaleString();
+            document.getElementById('stage30-total').textContent = stage30Total.toLocaleString();
+
+            // Calculate overall progress
+            const currentTotal = mysteryTotal + ancientTotal + voidTotal + primalTotal + sacredTotal + 
+                               stage20Total + stage10Total + stage30Total;
+            const remaining = goal - currentTotal;
+            const progressPercent = Math.min(100, (currentTotal / goal) * 100);
+
+            // Calculate energy and gems needed
+            const energyNeeded = Math.max(0, Math.ceil(remaining / 1.964));
+            const gemsNeeded = Math.ceil(energyNeeded * 0.308);
+
+            // Update progress display
+            document.getElementById('current-total').textContent = currentTotal.toLocaleString();
+            document.getElementById('remaining').textContent = remaining.toLocaleString();
+            document.getElementById('progress-percent').textContent = progressPercent.toFixed(1) + '%';
+            document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+            // Update calculations
+            document.getElementById('energy-needed').textContent = energyNeeded.toLocaleString();
+            document.getElementById('gems-needed').textContent = gemsNeeded.toLocaleString();
+
+            // Update summary
+            document.getElementById('summary-points').textContent = 
+                currentTotal.toLocaleString() + ' / ' + goal.toLocaleString();
+            
+            if (remaining <= 0) {
+                document.getElementById('summary-text').textContent = '🎉 Goal Complete!';
+            } else {
+                document.getElementById('summary-text').textContent = 
+                    `${remaining.toLocaleString()} points to go! Need ${energyNeeded.toLocaleString()} energy or ${gemsNeeded.toLocaleString()} gems.`;
+            }
+        }
+
+        // Initialize calculations
+        calculate();
+    </script>
+</body>
+</html>
