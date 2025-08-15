@@ -394,8 +394,8 @@
         // Dungeon values
         const STAGE_20_COINS_PER_ENERGY = 1.964;
         const STAGE_10_COINS_PER_ENERGY = 1.746;
-        const ENERGY_PER_GEM_PURCHASE = 130;
-        const GEMS_PER_PURCHASE = 40;
+        const ENERGY_PER_GEM_PURCHASE = 130;  // 130 energy per purchase
+        const GEMS_PER_PURCHASE = 40;         // 40 gems per purchase
 
         let selectedGoals = new Set();
 
@@ -464,7 +464,11 @@
             const stage20Runs = Math.floor(stage20Energy / 16);
             const stage10Runs = Math.floor(stage10Energy / 20);
             const totalEnergy = stage20Energy + stage10Energy;
-            const gemsNeeded = Math.ceil(totalEnergy / ENERGY_PER_GEM_PURCHASE) * GEMS_PER_PURCHASE;
+            
+            // Calculate gems needed: (Total Energy ÷ 130) × 40
+            // This gives us how many 40-gem purchases we need for the energy
+            const energyPurchasesNeeded = Math.ceil(totalEnergy / ENERGY_PER_GEM_PURCHASE);
+            const gemsNeeded = energyPurchasesNeeded * GEMS_PER_PURCHASE;
             
             // Update display
             document.getElementById('totalGoalDisplay').textContent = goalPoints.toLocaleString();
